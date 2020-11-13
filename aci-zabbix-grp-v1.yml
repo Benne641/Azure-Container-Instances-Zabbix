@@ -1,0 +1,60 @@
+apiVersion: 2019-12-01
+location: eastus2
+name: zabbix-ContainerGroup
+properties:
+  containers:
+  - name: dep-zabbixsrv
+    properties:
+      image: zabbix/zabbix-server-mysql:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      environmentVariables:
+      - name: DB_SERVER_HOST
+        secureValue: 'dep-admysql1.mysql.database.azure.com'
+      - name: DB_SERVER_PORT
+        secureValue: '3306'
+      - name: MYSQL_USER
+        secureValue: 'zabbix'
+      - name: MYSQL_PASSWORD
+        secureValue: 'zabbix'
+      ports:
+      - port: 10051
+      - port: 8080
+
+  - name: dep-zabbixweb
+    properties:
+      image: zabbix/zabbix-web-nginx-mysql
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      environmentVariables:
+      - name: ZBX_SERVER_HOST
+        secureValue: '172.22.15.164'
+      - name: ZBX_SERVER_PORT
+        secureValue: '10051'
+      - name: DB_SERVER_HOST
+        secureValue: 'dep-admysql1.mysql.database.azure.com'
+      - name: DB_SERVER_PORT
+        secureValue: '3306'
+      - name: MYSQL_USER
+        secureValue: 'zabbix@dep-admysql1'
+      - name: MYSQL_PASSWORD
+        secureValue: 'zabbix'
+      ports:
+      - port: 80
+
+  osType: Linux
+  ipAddress:
+    type: Private
+    ports:
+    - protocol: tcp
+      port: 80
+      port: 10051
+      port: 8080
+    ip: 172.22.15.164
+  networkProfile:
+    id: /subscriptions/d1127b97-9eb4-4b78-8c17-d73588237313/resourceGroups/rg_acitest/providers/Microsoft.Network/networkProfiles/dep-zabbixsrv-networkProfile
+type: Microsoft.ContainerInstance/containerGroups
