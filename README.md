@@ -7,4 +7,4 @@ Initial yaml deployment
     - passes enviroment variables with secure flag to not allow browsing in azure
     - containers are linked to managed mysql DB 8.0 in azure 
     - you will need to add the users and grant privileges on the mysql server 
-          mysql -u 'azadmin@dep-admysql1' -p -h 40.70.144.38 -P 3306;
+          mysql -u 'azadmin@dep-admysql1' -p -h <ip / host name here> -P 3306;
